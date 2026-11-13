@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Spacecraft3D from './components/Spacecraft3D'
+import MissionVisualization from './components/MissionVisualization'
 import './App.css'
 
 function App() {
@@ -822,6 +823,21 @@ function App() {
               <p className="eyebrow">MISSION CONTROL / FLIGHT OPERATIONS</p>
               <h2>MISSION SUCCESSFULLY LAUNCHED!</h2>
               <p>Your spacecraft has completed its launch sequence.</p>
+
+              <div style={{ margin: '25px 0' }}>
+                <p className="eyebrow">LIVE MISSION VISUALIZATION</p>
+
+                <h3>
+                  {selectedMission === 'moon'
+                    ? 'LUNAR ORBIT'
+                    : 'MARS ORBIT'}
+                </h3>
+
+                <MissionVisualization
+                  destination={selectedMission}
+                  spacecraft={spacecraft}
+                />
+              </div>
 
               <div className="launch-trail"></div>
 

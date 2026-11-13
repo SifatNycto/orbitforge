@@ -248,7 +248,7 @@ function RTGUnit() {
 }
 
 // Main spacecraft
-function SatelliteModel({ spacecraft }) {
+export function SatelliteModel({ spacecraft }) {
   const busScale =
     spacecraft.bus === 'lightweight'
       ? 0.75
