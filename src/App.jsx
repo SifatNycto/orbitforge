@@ -4,6 +4,7 @@ import './App.css'
 
 function App() {
   const [selectedMission, setSelectedMission] = useState(null)
+  const [selectedObjective, setSelectedObjective] = useState('')
   const [simulationResult, setSimulationResult] = useState(null)
   const [launchStatus, setLaunchStatus] = useState('idle')
   const [countdown, setCountdown] = useState(10)
@@ -128,6 +129,62 @@ function App() {
 
   // INITIAL MISSION BUDGET (MILLION USD)
   const missionBudget = 100
+  //....
+
+
+
+  const missionObjectives = {
+    moon: [
+      {
+        id: 'ice',
+        name: 'Search for Lunar Water Ice',
+        instrument: 'radar',
+        description: 'Investigate permanently shadowed regions near the lunar south pole for possible subsurface ice.'
+      },
+      {
+        id: 'surface',
+        name: 'Map the Lunar Surface',
+        instrument: 'camera',
+        description: 'Capture detailed images to study lunar terrain and surface features.'
+      },
+      {
+        id: 'composition',
+        name: 'Study Lunar Composition',
+        instrument: 'spectrometer',
+        description: 'Analyze reflected light to investigate the composition of lunar materials.'
+      }
+    ],
+    mars: [
+      {
+        id: 'terrain',
+        name: 'Map the Martian Surface',
+        instrument: 'camera',
+        description: 'Capture images of Martian terrain and geological features.'
+      },
+      {
+        id: 'minerals',
+        name: 'Identify Surface Minerals',
+        instrument: 'spectrometer',
+        description: 'Analyze spectral signatures to investigate Martian surface minerals.'
+      },
+      {
+        id: 'subsurface',
+        name: 'Investigate Subsurface Structure',
+        instrument: 'radar',
+        description: 'Use radar measurements to investigate subsurface structures.'
+      }
+    ]
+  }
+
+  const activeObjectives = selectedMission
+    ? missionObjectives[selectedMission]
+    : []
+
+  const activeObjective = activeObjectives.find(
+    objective => objective.id === selectedObjective
+  )
+
+
 
 
   // CALCULATE SPACECRAFT RESOURCES
@@ -407,7 +464,54 @@ function App() {
         </section>
       )}
 
-      
+      {/* SCIENTIFIC OBJECTIVES */}
+      {selectedMission && (
+        <section className="briefing-section">
+          <p className="eyebrow">SCIENCE MISSION PLANNER</p>
+          <h2>What do you want to discover?</h2>
+          <p>Select a scientific objective. Your instrument choice will be guided by your science goal.</p>
+
+          <div className="mission-grid">
+            {activeObjectives.map(objective => (
+              <article
+                className="mission-card"
+                key={objective.id}
+                style={{
+                  border: selectedObjective === objective.id
+                    ? '2px solid #62d5ff'
+                    : '1px solid rgba(255,255,255,0.12)'
+                }}
+              >
+                <div className="mission-info">
+                  <h3>{objective.name}</h3>
+                  <p>{objective.description}</p>
+                  <p>
+                    RECOMMENDED INSTRUMENT: <b>{objective.instrument}</b>
+                  </p>
+
+                  <button
+                    className="mission-button"
+                    onClick={() => {
+                      setSelectedObjective(objective.id)
+                      setSpacecraft({
+                        ...spacecraft,
+                        instrument: objective.instrument
+                      })
+                      setSimulationResult(null)
+                      setLaunchStatus('idle')
+                    }}
+                  >
+                    {selectedObjective === objective.id
+                      ? 'Objective Selected ✓'
+                      : 'Select Objective'}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* SPACECRAFT DESIGNER */}
       {selectedMission && (
         <section className="designer-section" id="designer">
