@@ -227,6 +227,14 @@ function App() {
   const runSimulation = () => {
     const failureReasons = []
 
+    if (!activeObjective) {
+      failureReasons.push('Please select a scientific objective first.')
+    } else if (spacecraft.instrument !== activeObjective.instrument) {
+      failureReasons.push(
+        `Instrument mismatch: Your selected objective requires a ${activeObjective.instrument}.`
+      )
+    }
+
     if (powerBalance < 0) {
       failureReasons.push(
         `Insufficient power: ${Math.abs(powerBalance)} W missing.`
@@ -398,7 +406,12 @@ function App() {
               <button
                 className="mission-button"
                 type="button"
-                onClick={() => setSelectedMission('moon')}
+                onClick={() => {
+                  setSelectedMission('moon')
+                  setSelectedObjective('')
+                  setSimulationResult(null)
+                  setLaunchStatus('idle')
+                }}
               >
                 Select Moon Mission <span>↗</span>
               </button>
@@ -427,7 +440,12 @@ function App() {
               <button
                 className="mission-button"
                 type="button"
-                onClick={() => setSelectedMission('mars')}
+                onClick={() => {
+                  setSelectedMission('mars')
+                  setSelectedObjective('')
+                  setSimulationResult(null)
+                  setLaunchStatus('idle')
+                }}
               >
                 Select Mars Mission <span>↗</span>
               </button>
@@ -457,7 +475,12 @@ function App() {
           <button
             className="primary-button"
             type="button"
-            onClick={() => setSelectedMission(null)}
+            onClick={() => {
+              setSelectedMission(null)
+              setSelectedObjective('')
+              setSimulationResult(null)
+              setLaunchStatus('idle')
+            }}
           >
             Back to missions <span>↗</span>
           </button>
