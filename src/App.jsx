@@ -185,6 +185,73 @@ function App() {
     objective => objective.id === selectedObjective
   )
 
+  
+  const scienceReports = {
+    ice: {
+      title: 'Lunar Subsurface Survey',
+      finding: 'Radar returns indicate subsurface structures worth further investigation in the selected survey region.',
+      observations: [
+        { label: 'Radar survey coverage', value: '82%' },
+        { label: 'Signal strength', value: 'High' },
+        { label: 'Potential ice indicators', value: '3 regions' },
+      ],
+      conclusion: 'Potential subsurface features identified. Further measurements would be needed to confirm water ice.'
+    },
+    surface: {
+      title: 'Lunar Surface Mapping',
+      finding: 'The camera survey produced terrain images suitable for identifying surface features.',
+      observations: [
+        { label: 'Image coverage', value: '91%' },
+        { label: 'Image quality', value: 'High' },
+        { label: 'Features mapped', value: '24' },
+      ],
+      conclusion: 'The simulated survey successfully mapped the selected lunar surface region.'
+    },
+    composition: {
+      title: 'Lunar Material Analysis',
+      finding: 'Spectral observations indicate variations in the reflected light from the surveyed materials.',
+      observations: [
+        { label: 'Spectral coverage', value: '78%' },
+        { label: 'Signal quality', value: 'Good' },
+        { label: 'Material signatures', value: '5' },
+      ],
+      conclusion: 'The simulated spectral survey identified material signatures for further analysis.'
+    },
+    terrain: {
+      title: 'Martian Terrain Survey',
+      finding: 'Orbital camera observations produced images of geological features across the survey region.',
+      observations: [
+        { label: 'Image coverage', value: '89%' },
+        { label: 'Image quality', value: 'High' },
+        { label: 'Features mapped', value: '31' },
+      ],
+      conclusion: 'The simulated camera survey mapped the selected Martian terrain.'
+    },
+    minerals: {
+      title: 'Martian Mineral Analysis',
+      finding: 'Spectral observations revealed several distinct signatures in the simulated surface data.',
+      observations: [
+        { label: 'Spectral coverage', value: '84%' },
+        { label: 'Signal quality', value: 'Good' },
+        { label: 'Material signatures', value: '7' },
+      ],
+      conclusion: 'The simulated analysis identified mineral-like spectral signatures requiring further investigation.'
+    },
+    subsurface: {
+      title: 'Martian Subsurface Survey',
+      finding: 'Radar observations indicate variations in the simulated subsurface structure.',
+      observations: [
+        { label: 'Radar coverage', value: '76%' },
+        { label: 'Signal strength', value: 'High' },
+        { label: 'Structural boundaries', value: '4' },
+      ],
+      conclusion: 'The simulated radar survey identified subsurface boundaries for further investigation.'
+    }
+  }
+
+  const activeScienceReport = scienceReports[selectedObjective]
+    
+
 
 
 
@@ -274,6 +341,7 @@ function App() {
       score,
       objective: activeObjective.name,
       instrument: spacecraft.instrument,
+      scienceReport: activeScienceReport,
     })
   }
 
@@ -857,6 +925,35 @@ function App() {
 
                 <h3>Scientific Instrument</h3>
                 <p>{simulationResult?.instrument}</p>
+
+
+                <div className="science-results">
+                  <p className="eyebrow">SIMULATED SCIENCE DATA</p>
+
+                  <h2>{simulationResult?.scienceReport?.title}</h2>
+
+                  <p>{simulationResult?.scienceReport?.finding}</p>
+
+                  <div className="resource-grid">
+                    {simulationResult?.scienceReport?.observations.map(item => (
+                      <div className="resource-card" key={item.label}>
+                        <span>{item.label}</span>
+                        <strong>{item.value}</strong>
+                      </div>
+                    ))}
+                  </div>
+
+                  <h3>Mission Findings</h3>
+                  <p>{simulationResult?.scienceReport?.conclusion}</p>
+
+                  <p>
+                    <small>
+                      All observations are illustrative, procedurally defined game data.
+                      They do not represent actual planetary measurements or verified discoveries.
+                    </small>
+                  </p>
+                </div>
+
 
                 <h3>Final Mission Score</h3>
                 <h1>{simulationResult?.score}/100</h1>
