@@ -261,9 +261,18 @@ function App() {
       return
     }
 
+    let score = 100
+
+    if (powerBalance < 30) score -= 10
+    if (remainingBudget < 15) score -= 10
+    if (totalMass > missionMassLimit * 0.9) score -= 10
+
     setSimulationResult({
       success: true,
       message: 'Mission ready! All engineering requirements satisfied.',
+      score,
+      objective: activeObjective.name,
+      instrument: spacecraft.instrument,
     })
   }
 
@@ -752,6 +761,32 @@ function App() {
               {simulationResult.message}
             </div>
           )}
+
+          {simulationResult?.success && (
+            <div className="resource-dashboard">
+              <p className="eyebrow">MISSION PERFORMANCE</p>
+              <h2>Mission Score: {simulationResult.score}/100</h2>
+
+              <h3>Science Objective</h3>
+              <p>{simulationResult.objective}</p>
+
+              <h3>Selected Instrument</h3>
+              <p>{simulationResult.instrument}</p>
+
+              <p>
+                Your spacecraft passed the engineering checks and is configured
+                to support the selected scientific objective.
+              </p>
+
+              <p>
+                <small>
+                  Educational simulation result — this score does not represent
+                  actual scientific discoveries or official NASA mission evaluation.
+                </small>
+              </p>
+            </div>
+          )}
+          
           {simulationResult?.success && launchStatus === 'idle' && (
             <button
               className="primary-button"
