@@ -812,18 +812,91 @@ function App() {
             </div>
           )}
 
+                    
           {launchStatus === 'launched' && (
             <div className="launch-animation">
               <div className="launch-stars">✦　·　✧　·　✦</div>
 
               <div className="launch-spacecraft">🛰️</div>
 
-              <h2>SPACECRAFT LAUNCHED!</h2>
-              <p>Your spacecraft has successfully lifted off.</p>
+              <p className="eyebrow">MISSION CONTROL / FLIGHT OPERATIONS</p>
+              <h2>MISSION SUCCESSFULLY LAUNCHED!</h2>
+              <p>Your spacecraft has completed its launch sequence.</p>
 
               <div className="launch-trail"></div>
+
+              <div className="resource-dashboard">
+                <p className="eyebrow">MISSION COMPLETION REPORT</p>
+                <h2>
+                  {selectedMission === 'moon'
+                    ? 'ECHOES OF THE MOON'
+                    : 'RED PLANET SURVEY'}
+                </h2>
+
+                <h3>Mission Status</h3>
+                <p>Launch sequence completed successfully</p>
+
+                <h3>Scientific Objective</h3>
+                <p>{simulationResult?.objective}</p>
+
+                <h3>Scientific Instrument</h3>
+                <p>{simulationResult?.instrument}</p>
+
+                <h3>Final Mission Score</h3>
+                <h1>{simulationResult?.score}/100</h1>
+
+                <div className="resource-grid">
+                  <div className="resource-card">
+                    <span>SPACECRAFT MASS</span>
+                    <strong>{totalMass} kg</strong>
+                  </div>
+
+                  <div className="resource-card">
+                    <span>POWER BALANCE</span>
+                    <strong>{powerBalance} W</strong>
+                  </div>
+
+                  <div className="resource-card">
+                    <span>MISSION COST</span>
+                    <strong>${totalCost}M</strong>
+                  </div>
+
+                  <div className="resource-card">
+                    <span>REMAINING BUDGET</span>
+                    <strong>${remainingBudget}M</strong>
+                  </div>
+                </div>
+
+                <p>
+                  Your spacecraft is ready to begin its simulated science mission.
+                  The scientific outcome has not been verified by real spacecraft data.
+                </p>
+
+                <button
+                  className="primary-button"
+                  type="button"
+                  onClick={() => {
+                    setSelectedMission(null)
+                    setSelectedObjective('')
+                    setSimulationResult(null)
+                    setLaunchStatus('idle')
+                    setCountdown(10)
+                    setSpacecraft({
+                      bus: 'standard',
+                      instrument: 'camera',
+                      propulsion: 'chemical',
+                      power: 'solar',
+                      communication: 'high-gain',
+                    })
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                >
+                  Start a New Mission ↗
+                </button>
+              </div>
             </div>
           )}
+
           </div>
         </section>
       )}
