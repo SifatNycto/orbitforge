@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Spacecraft3D from './components/Spacecraft3D'
 import MissionVisualization from './components/MissionVisualization'
+import { nasaMissionReferences } from './data/nasaReferenceData'
 import './App.css'
 
 function App() {
@@ -532,6 +533,87 @@ function App() {
 
         </div>
       </section>
+
+      
+      {/* NASA REAL MISSION REFERENCE */}
+      {selectedMission && (
+        <section className="briefing-section">
+          <p className="eyebrow">NASA REFERENCE MISSION</p>
+
+          <h2>
+            {nasaMissionReferences[selectedMission].missionName}
+          </h2>
+
+          <p>
+            Real NASA mission data used as an engineering reference
+            for this educational simulation.
+          </p>
+
+          <div className="resource-grid">
+            <div className="resource-card">
+              <span>REFERENCE SPACECRAFT MASS</span>
+              <strong>
+                {nasaMissionReferences[selectedMission].spacecraftMassKg.toLocaleString()} kg
+              </strong>
+            </div>
+
+            <div className="resource-card">
+              <span>REFERENCE POWER</span>
+              <strong>
+                {nasaMissionReferences[selectedMission].powerNote}
+              </strong>
+            </div>
+          </div>
+
+          <p>
+            <strong>Reference orbit:</strong>{' '}
+            {nasaMissionReferences[selectedMission].orbit}
+          </p>
+
+          <h3>NASA flight instruments</h3>
+
+          <div className="mission-grid">
+            {nasaMissionReferences[selectedMission].instruments.map(instrument => (
+              <article className="mission-card" key={instrument.id}>
+                <div className="mission-info">
+                  <h3>{instrument.name}</h3>
+                  <p>{instrument.type}</p>
+                  <p>{instrument.supports}</p>
+
+                  <p>
+                    <strong>Mass:</strong>{' '}
+                    {instrument.massKg === null
+                      ? 'Not verified'
+                      : `${instrument.massKg} kg`}
+                  </p>
+
+                  <p>
+                    <strong>Power:</strong>{' '}
+                    {instrument.powerW === null
+                      ? 'Not verified'
+                      : `${instrument.powerW} W`}
+                  </p>
+
+                  <a href={instrument.source} target="_blank" rel="noreferrer">
+                    NASA instrument reference ↗
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <p>
+            <a
+              href={nasaMissionReferences[selectedMission].source}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View NASA mission reference ↗
+            </a>
+          </p>
+        </section>
+      )}
+
 
       {/* SELECTED MISSION BRIEFING */}
       {selectedMission && (
