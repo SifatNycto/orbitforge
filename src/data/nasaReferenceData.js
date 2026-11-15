@@ -1,16 +1,3 @@
-// ORBITFORGE — NASA reference data
-//
-// RULES USED IN THIS FILE
-//  * Every number was checked against a NASA-hosted document or a NASA press kit.
-//  * `null` means "unknown / not verified". Nothing is estimated.
-//  * Where NASA documents disagree, the primary value is kept in the main field and the
-//    other value is stored in `alternativeValues` / `designAllocation` with its source.
-//  * `valueType` tells you whether a number is a flight value or a pre-launch design allocation.
-//  * `secondary: true` on a timeline entry means the date was confirmed from a non-NASA or
-//    NASA-derived secondary page rather than a NASA primary document.
-
-// Mission segments from NASA "Design and Develop Science Missions"
-// (2026 NASA Space Apps Challenge — Resources tab).
 export const missionSegments = [
   {
     id: 'launch',

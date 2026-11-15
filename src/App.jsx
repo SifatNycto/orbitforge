@@ -20,12 +20,6 @@ function App() {
 
   
   // COMPONENT ENGINEERING SPECIFICATIONS
-  // Component values below are illustrative game-design assumptions (a small
-  // spacecraft class, not a NASA spacecraft). The instrument mass/power is
-  // replaced by verified NASA flight values whenever the selected science
-  // objective maps to a real NASA instrument (see nasaReferenceData.js).
-  // Power "generation" is the sunlit output at Earth/Moon distance (1 AU);
-  // solar output is scaled by the destination's solar irradiance below.
 
   const componentSpecs = {
     bus: {

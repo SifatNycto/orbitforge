@@ -1,148 +1,242 @@
-# ORBITFORGE — Space Mission Design Simulator
+# ORBITFORGE 🚀
+### Space Mission Design Simulator
 
-**Design. Simulate. Explore.**
+**Design. Engineer. Simulate. Explore.**
 
-ORBITFORGE is an interactive space mission design simulator where players take on the role of a spacecraft mission designer. Select a destination, configure spacecraft systems, balance engineering resources, and test whether your spacecraft is ready for launch.
+ORBITFORGE is an interactive, browser-based space mission design game developed for the **NASA Space Apps Challenge 2026**.
 
-The project aims to make the fundamentals of spacecraft engineering and mission planning accessible through an interactive, browser-based experience.
+Step into the role of a spacecraft mission designer. Choose a mission destination, configure spacecraft systems, balance engineering constraints, and test whether your spacecraft is ready for launch.
 
-## 🚀 Project Overview
+The project combines space exploration, spacecraft engineering concepts, scientific references, and interactive 3D visualization to make mission design engaging and accessible.
 
-Space missions require careful planning. Every spacecraft must operate within engineering constraints such as mass, power consumption, available energy, and mission budget.
+---
 
-ORBITFORGE introduces these challenges through a simulation game featuring two mission destinations:
+## 🌌 Missions
 
-- **Moon — Echoes of the Moon:** Investigate the lunar south pole and search for signs of water ice.
-- **Mars — Red Planet Survey:** Study the Martian atmosphere and map the planet's surface.
+### 🌕 Moon — Echoes of the Moon
+Design a lunar exploration spacecraft and investigate the Moon through scientific objectives such as:
 
-Players configure their spacecraft and evaluate whether their designs satisfy the selected mission's requirements.
+- Searching for potential lunar water ice.
+- Mapping the lunar surface.
+- Investigating hydrogen distribution.
 
-## ✨ Current Features
+NASA mission and instrument references include the **Lunar Reconnaissance Orbiter (LRO)** and its scientific instruments.
+
+### 🔴 Mars — Red Planet Survey
+Design a Mars exploration spacecraft and investigate the Red Planet through objectives such as:
+
+- Mapping Martian terrain.
+- Identifying surface minerals.
+- Investigating subsurface structures.
+
+NASA mission and instrument references include the **Mars Reconnaissance Orbiter (MRO)** and its scientific instruments.
+
+---
+
+## ✨ Features
 
 - **Mission Selection:** Choose between Moon and Mars exploration missions.
-- **Spacecraft Configuration:** Customize five spacecraft systems:
-  - Spacecraft bus
-  - Scientific instrument
-  - Propulsion system
-  - Power system
-  - Communication system
-- **Engineering Calculator:** Calculate total spacecraft mass, power consumption, power generation, and estimated mission cost.
-- **Live Resource Dashboard:** Monitor mass limits, power balance, and remaining budget.
-- **Mission Simulation:** Run engineering checks and receive pass/fail results with explanations.
-- **Launch Preparation:** Start a countdown when the spacecraft passes its engineering checks.
-- **Interactive 3D Spacecraft:** Inspect and rotate a 3D spacecraft model in the mission designer.
+- **Mission Objectives:** Select scientific objectives relevant to each destination.
+- **Spacecraft Configuration:** Customize five spacecraft systems.
+- **Engineering Calculations:** Evaluate spacecraft mass, power generation, power consumption, and estimated cost.
+- **Resource Management:** Monitor engineering constraints and available resources.
+- **Mission Simulation:** Validate spacecraft configurations and identify design failures.
+- **Launch Countdown:** Prepare eligible spacecraft for launch.
+- **Interactive 3D Visualization:** Explore the spacecraft and its configurable components.
+- **NASA Reference Data:** Explore relevant mission, instrument, and scientific engineering information.
+- **Mission Timeline:** View important mission phases and milestones.
 
-## 🛰️ Engineering Simulation
+## 🛰️ Spacecraft Systems
 
-The simulator evaluates spacecraft configurations against three primary constraints:
+Players can configure five major spacecraft systems:
 
-| Engineering Constraint | What It Checks |
+| System | Purpose |
 |---|---|
-| Mass | Whether the spacecraft stays within the mission mass limit |
-| Power | Whether available power generation meets system consumption |
-| Budget | Whether the configuration stays within the mission budget |
+| Spacecraft Bus | Provides the primary spacecraft structure and support systems |
+| Scientific Instruments | Performs mission-specific scientific observations |
+| Propulsion | Supports spacecraft maneuvering and orbital operations |
+| Power Systems | Supplies electrical power to spacecraft components |
+| Communication | Enables spacecraft communication and data transmission |
 
-Current game assumptions:
+## ⚙️ Engineering Simulation
+
+ORBITFORGE evaluates spacecraft configurations using three primary engineering constraints:
+
+| Constraint | Evaluation |
+|---|---|
+| Mass | Checks spacecraft mass against the selected mission limit |
+| Power | Compares power generation with system power requirements |
+| Budget | Evaluates estimated configuration cost against the available budget |
+
+### Current Gameplay Parameters
 
 | Mission | Maximum Spacecraft Mass |
 |---|---:|
 | Moon | 350 kg |
 | Mars | 400 kg |
 
-The current mission budget is **$100 million**.
+**Important:** These are illustrative gameplay constraints, not official NASA spacecraft specifications. Component costs and other simplified game parameters should also be distinguished from real mission data.
 
-*These values are illustrative gameplay assumptions, not official NASA mission specifications.*
+## 🔬 NASA Data & References
+
+The project incorporates relevant NASA mission and scientific reference information to support its educational mission-design experience.
+
+Examples include:
+
+- Lunar Reconnaissance Orbiter (LRO).
+- Mars Reconnaissance Orbiter (MRO).
+- LROC — Lunar Reconnaissance Orbiter Camera.
+- Mini-RF — Miniature Radio Frequency instrument.
+- LEND — Lunar Exploration Neutron Detector.
+- HiRISE — High Resolution Imaging Science Experiment.
+- CRISM — Compact Reconnaissance Imaging Spectrometer for Mars.
+- SHARAD — Shallow Radar.
+
+NASA references are used to inform mission data, instrument specifications, scientific objectives, and spacecraft engineering context.
+
+Some gameplay parameters are simplified assumptions. They should not be interpreted as verified specifications of actual NASA spacecraft.
+
+### Official Challenge Resources
+
+- [NASA Space Apps Challenge 2026](https://www.spaceappschallenge.org/2026/)
+- [Space Mission Design Game — Details](https://www.spaceappschallenge.org/2026/challenges/space-mission-design-game/?tab=details)
+- [Space Mission Design Game — Resources](https://www.spaceappschallenge.org/2026/challenges/space-mission-design-game/?tab=resources)
 
 ## 🛠️ Technology Stack
 
-- **React** — User interface and application logic
-- **Vite** — Development server and build tooling
-- **JavaScript** — Simulation logic and interactivity
-- **CSS** — Interface styling and responsive layout
-- **Three.js** — 3D graphics rendering
-- **React Three Fiber** — React renderer for Three.js
-- **React Three Drei** — 3D scene utilities and controls
+| Technology | Usage |
+|---|---|
+| React | User interface and application logic |
+| JavaScript | Mission and simulation logic |
+| Vite | Development server and build tooling |
+| CSS | Styling and responsive interface |
+| Three.js | 3D graphics |
+| React Three Fiber | React renderer for Three.js |
+| React Three Drei | 3D scene utilities and controls |
 
 ## 💻 Getting Started
 
 ### Prerequisites
 
-- Node.js
+Install the following:
+
+- [Node.js](https://nodejs.org/)
 - npm
-- Git
+- [Git](https://git-scm.com/)
 
-### Installation
-
-Clone the repository:
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/SifatNycto/space-mission-design-game.git
+git clone https://github.com/SifatNycto/ORBITFORGE.git
 ```
 
-Navigate into the project directory:
+### 2. Navigate to the project directory
 
 ```bash
-cd space-mission-design-game
+cd ORBITFORGE
 ```
 
-Install dependencies:
+### 3. Install dependencies
 
 ```bash
 npm install
 ```
 
-Start the development server:
+### 4. Start the development server
 
 ```bash
 npm run dev
 ```
 
-Open the local URL displayed in your terminal, usually:
+Open the local URL displayed in your terminal. By default:
 
 ```text
-http://localhost:5173/
+http://localhost:5173
+```
+
+### 5. Build for production
+
+```bash
+npm run build
+```
+
+### 6. Preview the production build
+
+```bash
+npm run preview
 ```
 
 ## 📁 Project Structure
 
 ```text
-space-mission-design-game/
+ORBITFORGE/
 ├── public/
+│   ├── favicon.svg
+│   └── icons.svg
+│
 ├── src/
+│   ├── assets/
+│   │   ├── hero.png
+│   │   ├── react.svg
+│   │   └── vite.svg
+│   │
 │   ├── components/
+│   │   ├── MissionVisualization.jsx
 │   │   └── Spacecraft3D.jsx
+│   │
+│   ├── data/
+│   │   └── nasaReferenceData.js
+│   │
 │   ├── App.jsx
 │   ├── App.css
+│   ├── index.css
 │   └── main.jsx
+│
+├── .gitignore
 ├── index.html
 ├── package.json
 ├── package-lock.json
-└── README.md
+└── vite.config.js
 ```
 
-## 🗺️ Development Roadmap
+## 🚀 Deployment
 
-ORBITFORGE is under active development. Planned improvements include:
+ORBITFORGE can be deployed using free-tier static hosting services compatible with React and Vite.
 
-- More realistic spacecraft 3D models and materials
-- Mission-specific spacecraft configurations
-- More detailed mission environments
-- Improved launch and mission animations
-- Expanded engineering parameters and simulation logic
-- Mission progression and performance evaluation
+Recommended platform:
 
-## 🎯 Project Goal
+- [Vercel](https://vercel.com/)
 
-The goal of ORBITFORGE is to combine space exploration, engineering concepts, and interactive game design into an engaging educational simulation.
+Build command:
 
-Players should not simply launch a spacecraft — they should understand the engineering decisions that make a mission possible.
+```bash
+npm run build
+```
+
+Output directory:
+
+```text
+dist
+```
+
+## 🎯 Project Vision
+
+Space exploration is not just about reaching another planet. It is about making thousands of engineering decisions before a spacecraft ever leaves Earth.
+
+ORBITFORGE aims to help players understand those decisions through interactive mission planning, spacecraft configuration, resource management, and scientific exploration.
+
+**Design your mission. Engineer your spacecraft. Explore beyond Earth.**
+
+---
 
 ## 👨‍💻 Developer
 
 **Mehedi Hasan Sifat**
 
-GitHub: [@SifatNycto](https://github.com/SifatNycto)
+- GitHub: [@SifatNycto](https://github.com/SifatNycto)
+
+Developed as a project for the **NASA Space Apps Challenge 2026 — Space Mission Design Game**.
 
 ---
 
-*ORBITFORGE — Design your mission. Engineer your spacecraft. Explore beyond Earth.*
+*ORBITFORGE — Turning mission design into an exploration experience.*
