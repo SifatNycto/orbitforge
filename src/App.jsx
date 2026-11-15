@@ -652,6 +652,76 @@ function App() {
       )}
 
 
+
+      {/* NASA MISSION COMPARISON */}
+      {selectedMission && (
+        <section className="briefing-section">
+          <p className="eyebrow">ENGINEERING COMPARISON</p>
+          <h2>Your Spacecraft vs NASA Reference</h2>
+
+          <p>
+            Compare your current spacecraft configuration
+            with the selected NASA reference mission.
+          </p>
+
+          <div className="resource-grid">
+            <div className="resource-card">
+              <span>YOUR SPACECRAFT MASS</span>
+              <strong>{totalMass.toLocaleString()} kg</strong>
+            </div>
+
+            <div className="resource-card">
+              <span>NASA REFERENCE MASS</span>
+              <strong>
+                {nasaMissionReferences[selectedMission]
+                  .spacecraftMassKg.toLocaleString()} kg
+              </strong>
+            </div>
+
+            <div className="resource-card">
+              <span>YOUR POWER GENERATION</span>
+              <strong>{powerGeneration} W</strong>
+            </div>
+
+            <div className="resource-card">
+              <span>NASA REFERENCE POWER</span>
+              <strong>
+                {nasaMissionReferences[selectedMission].powerNote}
+              </strong>
+            </div>
+          </div>
+
+          <div className="nasa-data-status">
+            <h3>Engineering Insights</h3>
+
+            <p>
+              <strong>Mass difference:</strong>{" "}
+              {(
+                nasaMissionReferences[selectedMission].spacecraftMassKg -
+                totalMass
+              ).toLocaleString()} kg
+            </p>
+
+            <p>
+              <strong>Selected instrument:</strong>{" "}
+              {nasaInstrumentName}
+            </p>
+
+            <p>
+              <strong>Power balance:</strong> {powerBalance} W
+            </p>
+
+            <p>
+              Your spacecraft uses simplified educational
+              engineering assumptions. It is not a replica
+              of the NASA reference spacecraft.
+            </p>
+          </div>
+        </section>
+      )}
+
+
+
       {/* SELECTED MISSION BRIEFING */}
       {selectedMission && (
         <section className="briefing-section" id="briefing">
