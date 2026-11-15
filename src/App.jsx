@@ -627,6 +627,24 @@ function App() {
                 {nasaMissionReferences[selectedMission].powerNote}
               </strong>
             </div>
+
+            <div className="resource-card">
+              <span>REFERENCE PAYLOAD CAPACITY</span>
+              <strong>
+                {nasaMissionReferences[selectedMission].payloadCapacityKg
+                  ? `${nasaMissionReferences[selectedMission].payloadCapacityKg} kg`
+                  : 'Not verified'}
+              </strong>
+            </div>
+
+            <div className="resource-card">
+              <span>REFERENCE PAYLOAD POWER</span>
+              <strong>
+                {nasaMissionReferences[selectedMission].payloadPowerW
+                  ? `${nasaMissionReferences[selectedMission].payloadPowerW} W`
+                  : 'Not verified'}
+              </strong>
+            </div>
           </div>
 
           <p>
