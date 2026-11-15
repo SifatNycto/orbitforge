@@ -66,6 +66,31 @@ function ScientificInstrument({ type }) {
     )
   }
 
+  if (type === 'neutron') {
+    // Neutron detector (LEND-style): body with four collimated sensor tubes
+    return (
+      <group position={[0.48, -0.35, 0.7]}>
+        <mesh>
+          <boxGeometry args={[0.62, 0.5, 0.45]} />
+          <meshStandardMaterial color="#8f9bab" metalness={0.75} roughness={0.35} />
+        </mesh>
+
+        {[-0.16, 0.16].flatMap((x) =>
+          [-0.1, 0.1].map((y) => (
+            <mesh
+              key={`${x}-${y}`}
+              position={[x, y, 0.3]}
+              rotation={[Math.PI / 2, 0, 0]}
+            >
+              <cylinderGeometry args={[0.065, 0.065, 0.2, 16]} />
+              <meshStandardMaterial color="#d5a94e" metalness={0.8} roughness={0.3} />
+            </mesh>
+          ))
+        )}
+      </group>
+    )
+  }
+
   if (type === 'spectrometer') {
     return (
       <group position={[0.48, -0.35, 0.72]}>
@@ -258,6 +283,8 @@ export function SatelliteModel({ spacecraft }) {
 
   const hasSolarPanels = spacecraft.power !== 'rtg'
   const panelSize = spacecraft.power === 'advanced-solar' ? 1.3 : 1
+  // Keep the inner edge of the panel attached to the support arm when the panel is enlarged
+  const panelX = 1.35 + 1.2 * panelSize
 
   return (
     <group rotation={[0.25, -0.35, 0]}>
@@ -300,8 +327,8 @@ export function SatelliteModel({ spacecraft }) {
             <meshStandardMaterial color="#aeb8c5" metalness={0.9} />
           </mesh>
 
-          <SolarPanel position={[2.55, 0, 0]} size={panelSize} />
-          <SolarPanel position={[-2.55, 0, 0]} size={panelSize} />
+          <SolarPanel position={[panelX, 0, 0]} size={panelSize} />
+          <SolarPanel position={[-panelX, 0, 0]} size={panelSize} />
         </>
       )}
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Spacecraft3D from './components/Spacecraft3D'
 import MissionVisualization from './components/MissionVisualization'
-import { nasaMissionReferences } from './data/nasaReferenceData'
+import { nasaMissionReferences, missionSegments } from './data/nasaReferenceData'
 import './App.css'
 
 function App() {
@@ -20,7 +20,12 @@ function App() {
 
   
   // COMPONENT ENGINEERING SPECIFICATIONS
-  // All values are illustrative game-design assumptions.
+  // Component values below are illustrative game-design assumptions (a small
+  // spacecraft class, not a NASA spacecraft). The instrument mass/power is
+  // replaced by verified NASA flight values whenever the selected science
+  // objective maps to a real NASA instrument (see nasaReferenceData.js).
+  // Power "generation" is the sunlit output at Earth/Moon distance (1 AU);
+  // solar output is scaled by the destination's solar irradiance below.
 
   const componentSpecs = {
     bus: {
@@ -227,15 +232,15 @@ function App() {
       ],
       conclusion: 'The simulated survey successfully mapped the selected lunar surface region.'
     },
-    composition: {
-      title: 'Lunar Material Analysis',
-      finding: 'Spectral observations indicate variations in the reflected light from the surveyed materials.',
+    hydrogen: {
+      title: 'Lunar Hydrogen Mapping',
+      finding: 'Neutron measurements were used to map where hydrogen is concentrated in the upper regolith.',
       observations: [
-        { label: 'Spectral coverage', value: '78%' },
-        { label: 'Signal quality', value: 'Good' },
-        { label: 'Material signatures', value: '5' },
+        { label: 'Reference spatial resolution (LEND)', value: '10 km' },
+        { label: 'Reference hydrogen sensitivity', value: '~100 ppm' },
+        { label: 'Equivalent water ice at that limit', value: '~0.1 wt%' },
       ],
-      conclusion: 'The simulated spectral survey identified material signatures for further analysis.'
+      conclusion: 'Hydrogen-rich areas can indicate water ice, but other instruments are needed to confirm that the hydrogen is in the form of water.'
     },
     terrain: {
       title: 'Martian Terrain Survey',
@@ -311,8 +316,17 @@ function App() {
     componentSpecs.propulsion[spacecraft.propulsion].power +
     componentSpecs.communication[spacecraft.communication].power
 
-  const powerGeneration =
-    componentSpecs.power[spacecraft.power].generation
+  // Destination data (NASA NSSDC fact sheets): solar irradiance at Mars is
+  // 586.2 W/m2 versus 1361.0 W/m2 at the Moon/Earth (ratio 0.431).
+  const activeReference = selectedMission
+    ? nasaMissionReferences[selectedMission]
+    : null
+  const solarFluxRatio = activeReference?.solarIrradianceRatio ?? 1
+  const isSolarPower = spacecraft.power !== 'rtg'
+
+  const powerGeneration = isSolarPower
+    ? Math.round(componentSpecs.power[spacecraft.power].generation * solarFluxRatio)
+    : componentSpecs.power[spacecraft.power].generation
 
   const powerBalance = powerGeneration - totalPowerUse
 
@@ -328,12 +342,12 @@ function App() {
 
   // NASA DATA VERIFICATION STATUS
   const nasaMassStatus = instrumentMassVerified
-    ? `${activeNasaInstrument.massKg} kg (NASA reference)`
-    : 'Not verified — illustrative fallback used'
+    ? `${activeNasaInstrument.massKg} kg (NASA — ${activeNasaInstrument.valueType})`
+    : 'Unknown / not linked to a NASA instrument — illustrative fallback used'
 
   const nasaPowerStatus = instrumentPowerVerified
-    ? `${activeNasaInstrument.powerW} W (NASA reference)`
-    : 'Not verified — illustrative fallback used'
+    ? `${activeNasaInstrument.powerW} W (NASA — ${activeNasaInstrument.valueType})`
+    : 'Unknown / not linked to a NASA instrument — illustrative fallback used'
 
   const nasaInstrumentName =
     activeNasaInstrument?.name || 'No linked NASA instrument'
@@ -421,7 +435,7 @@ function App() {
       score,
       scoreBreakdown,
       objective: activeObjective.name,
-      instrument: spacecraft.instrument,
+      instrument: componentSpecs.instrument[spacecraft.instrument].name,
       scienceReport: activeScienceReport,
     })
   }
@@ -448,20 +462,18 @@ function App() {
     }
 
     if (launchStatus === 'countdown') {
-      const countdownTimer = setInterval(() => {
-        setCountdown((previousCount) => {
-          if (previousCount <= 1) {
-            setLaunchStatus('launched')
-            return 0
-          }
-
-          return previousCount - 1
-        })
+      const countdownTimer = setTimeout(() => {
+        if (countdown <= 1) {
+          setCountdown(0)
+          setLaunchStatus('launched')
+        } else {
+          setCountdown(countdown - 1)
+        }
       }, 1000)
 
-      return () => clearInterval(countdownTimer)
+      return () => clearTimeout(countdownTimer)
     }
-  }, [launchStatus])
+  }, [launchStatus, countdown])
 
 
   return (
@@ -588,8 +600,8 @@ function App() {
               <div className="mission-type">ROBOTIC / ORBITER</div>
               <h3>Red Planet Survey</h3>
               <p>
-                Plan an orbital mission to study the Martian atmosphere and
-                map its surface.
+                Plan an orbital mission to map the Martian surface, identify
+                its minerals and probe its subsurface.
               </p>
               <div className="mission-meta">
                 <span>DIFFICULTY <b>CHALLENGING</b></span>
@@ -645,20 +657,20 @@ function App() {
             </div>
 
             <div className="resource-card">
-              <span>REFERENCE PAYLOAD CAPACITY</span>
+              <span>REFERENCE PAYLOAD MASS</span>
               <strong>
-                {nasaMissionReferences[selectedMission].payloadCapacityKg
-                  ? `${nasaMissionReferences[selectedMission].payloadCapacityKg} kg`
-                  : 'Not verified'}
+                {nasaMissionReferences[selectedMission].payloadMassKg != null
+                  ? `${nasaMissionReferences[selectedMission].payloadMassKg} kg`
+                  : 'Unknown'}
               </strong>
             </div>
 
             <div className="resource-card">
               <span>REFERENCE PAYLOAD POWER</span>
               <strong>
-                {nasaMissionReferences[selectedMission].payloadPowerW
+                {nasaMissionReferences[selectedMission].payloadPowerW != null
                   ? `${nasaMissionReferences[selectedMission].payloadPowerW} W`
-                  : 'Not verified'}
+                  : 'Unknown'}
               </strong>
             </div>
           </div>
@@ -666,6 +678,34 @@ function App() {
           <p>
             <strong>Reference orbit:</strong>{' '}
             {nasaMissionReferences[selectedMission].orbit}
+          </p>
+
+          <p>
+            <strong>Dry mass / propellant:</strong>{' '}
+            {nasaMissionReferences[selectedMission].dryMassKg} kg /{' '}
+            {nasaMissionReferences[selectedMission].propellantMassKg} kg
+            {' '}— launched on {nasaMissionReferences[selectedMission].launchVehicle}
+          </p>
+
+          <p>
+            <strong>Delta-V:</strong>{' '}
+            {nasaMissionReferences[selectedMission].deltaVNote}
+          </p>
+
+          <p>
+            <strong>Communications:</strong>{' '}
+            {nasaMissionReferences[selectedMission].communications ||
+              'Unknown — not verified in the sources checked'}
+          </p>
+
+          <p>
+            <strong>Solar irradiance at destination:</strong>{' '}
+            {nasaMissionReferences[selectedMission].solarIrradianceWm2} W/m²
+            {' '}({Math.round(nasaMissionReferences[selectedMission].solarIrradianceRatio * 100)}% of Earth’s)
+          </p>
+
+          <p>
+            <small>{nasaMissionReferences[selectedMission].payloadNote}</small>
           </p>
 
           <h3>NASA flight instruments</h3>
@@ -680,21 +720,60 @@ function App() {
 
                   <p>
                     <strong>Mass:</strong>{' '}
-                    {instrument.massKg === null
-                      ? 'Not verified'
+                    {instrument.massKg == null
+                      ? 'Unknown'
                       : `${instrument.massKg} kg`}
                   </p>
 
                   <p>
                     <strong>Power:</strong>{' '}
-                    {instrument.powerW === null
-                      ? 'Not verified'
+                    {instrument.powerW == null
+                      ? 'Unknown'
                       : `${instrument.powerW} W`}
                   </p>
+
+                  <p>
+                    <small>Value type: {instrument.valueType}</small>
+                  </p>
+
+                  {instrument.designAllocation && (
+                    <p>
+                      <small>
+                        Pre-launch design allocation: {instrument.designAllocation.massKg} kg,{' '}
+                        {instrument.designAllocation.powerW} W
+                      </small>
+                    </p>
+                  )}
+
+                  {instrument.powerNote && (
+                    <p><small>{instrument.powerNote}</small></p>
+                  )}
+
+                  {instrument.massNote && (
+                    <p><small>{instrument.massNote}</small></p>
+                  )}
+
+                  <p>
+                    <strong>Performance:</strong>{' '}
+                    {instrument.performance || 'Unknown — not verified'}
+                  </p>
+
+                  {instrument.dataNote && (
+                    <p><strong>Data:</strong> {instrument.dataNote}</p>
+                  )}
 
                   <a href={instrument.source} target="_blank" rel="noreferrer">
                     NASA instrument reference ↗
                   </a>
+
+                  {instrument.specificationSource && (
+                    <>
+                      {' · '}
+                      <a href={instrument.specificationSource} target="_blank" rel="noreferrer">
+                        Specification source ↗
+                      </a>
+                    </>
+                  )}
                 </div>
               </article>
             ))}
@@ -708,6 +787,18 @@ function App() {
             >
               View NASA mission reference ↗
             </a>
+          </p>
+
+          <p>
+            <small>
+              Sources:{' '}
+              {nasaMissionReferences[selectedMission].additionalSources.map((item, index) => (
+                <span key={item.url}>
+                  {index > 0 && ' · '}
+                  <a href={item.url} target="_blank" rel="noreferrer">{item.name}</a>
+                </span>
+              ))}
+            </small>
           </p>
         </section>
       )}
@@ -756,7 +847,7 @@ function App() {
             <h3>Engineering Insights</h3>
 
             <p>
-              <strong>Mass difference:</strong>{" "}
+              <strong>NASA reference mass minus your mass:</strong>{" "}
               {(
                 nasaMissionReferences[selectedMission].spacecraftMassKg -
                 totalMass
@@ -770,6 +861,13 @@ function App() {
 
             <p>
               <strong>Power balance:</strong> {powerBalance} W
+            </p>
+
+            <p>
+              <strong>Solar scaling at {nasaMissionReferences[selectedMission].target}:</strong>{" "}
+              {isSolarPower
+                ? `solar output scaled by ${solarFluxRatio} (NASA irradiance ${nasaMissionReferences[selectedMission].solarIrradianceWm2} W/m² vs 1361.0 W/m² at Earth/Moon)`
+                : 'not applicable — radioisotope power does not depend on sunlight'}
             </p>
 
             <p>
@@ -797,7 +895,7 @@ function App() {
           <p>
             {selectedMission === 'moon'
               ? 'Your objective is to investigate the lunar south pole and search for signs of water ice.'
-              : 'Your objective is to study the Martian atmosphere and map the planet surface.'}
+              : 'Your objective is to map the Martian surface, identify its minerals and investigate its subsurface.'}
           </p>
 
           <button
@@ -1061,7 +1159,37 @@ function App() {
 
               <p>
                 <strong>Other spacecraft components:</strong> Illustrative game assumptions
+                (bus, propulsion, antennas, power systems and the {missionMassLimit} kg mass limit are not NASA values)
               </p>
+
+              <p>
+                <strong>Solar flux at destination:</strong>{' '}
+                {activeReference.solarIrradianceWm2} W/m² — solar generation scaled by {solarFluxRatio}
+              </p>
+            </div>
+
+            {/* NASA MISSION SEGMENTS */}
+            <div className="nasa-data-status">
+              <h3>Mission segments (NASA systems-engineering model)</h3>
+
+              {missionSegments.map(segment => (
+                <p key={segment.id}>
+                  <strong>{segment.name}:</strong>{' '}
+                  {segment.id === 'launch' &&
+                    `Reference vehicle ${activeReference.launchVehicle}. Launch-vehicle capacity is not modeled (no verified capacity data).`}
+                  {segment.id === 'space' &&
+                    (powerBalance >= 0 && remainingBudget >= 0 && massAvailable
+                      ? '✓ Spacecraft is within mass, power and budget limits.'
+                      : '⚠ Spacecraft violates at least one mass, power or budget limit.')}
+                  {segment.id === 'ground' &&
+                    `${componentSpecs.communication[spacecraft.communication].name} selected. Downlink data rate is not modeled (no verified antenna data rates).`}
+                  {segment.id === 'user' &&
+                    (activeObjective
+                      ? `Science objective: ${activeObjective.name}`
+                      : 'No science objective selected yet.')}
+                  {' '}<small>({segment.definition})</small>
+                </p>
+              ))}
             </div>
 
             {/* ENGINEERING STATUS */}
@@ -1239,6 +1367,30 @@ function App() {
                   </p>
                 </div>
 
+
+                {activeNasaInstrument && (
+                  <div className="nasa-data-status">
+                    <h3>Real NASA mission comparison</h3>
+                    <p>
+                      Your science objective matches <strong>{activeNasaInstrument.name}</strong> on{' '}
+                      <strong>{activeReference?.missionName}</strong>.
+                    </p>
+                    <p>
+                      <strong>Real instrument:</strong>{' '}
+                      {activeNasaInstrument.massKg != null ? `${activeNasaInstrument.massKg} kg` : 'mass unknown'},{' '}
+                      {activeNasaInstrument.powerW != null ? `${activeNasaInstrument.powerW} W` : 'power unknown'}
+                    </p>
+                    <p>
+                      <strong>Real performance:</strong>{' '}
+                      {activeNasaInstrument.performance || 'Unknown — not verified'}
+                    </p>
+                    <p>
+                      <strong>Real spacecraft:</strong>{' '}
+                      {activeReference?.spacecraftMassKg.toLocaleString()} kg at launch versus{' '}
+                      {totalMass.toLocaleString()} kg for yours.
+                    </p>
+                  </div>
+                )}
 
                 <h3>Final Mission Score</h3>
                 <h1>{simulationResult?.score}/100</h1>

@@ -3,12 +3,25 @@ import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Stars } from '@react-three/drei'
 import { SatelliteModel } from './Spacecraft3D'
+import { nasaMissionReferences } from '../data/nasaReferenceData'
+
+// Relative body sizes use NASA equatorial radii (Moon 1738.1 km, Mars 3396.2 km).
+// The Moon is drawn with radius 1.5 scene units; Mars is scaled from it.
+const MOON_VISUAL_RADIUS = 1.5
+
+function getPlanetRadius(destination) {
+  const reference = nasaMissionReferences[destination]
+  const moonRadiusKm = nasaMissionReferences.moon.equatorialRadiusKm
+  return MOON_VISUAL_RADIUS * (reference.equatorialRadiusKm / moonRadiusKm)
+}
 
 function Planet({ destination }) {
   const isMoon = destination === 'moon'
+  const radius = getPlanetRadius(destination)
 
   return (
-    <group>
+    // The meshes below were modelled for a radius of 2, so scale them to the real relative size
+    <group scale={radius / 2}>
       <mesh>
         <sphereGeometry args={[2, 64, 64]} />
         <meshStandardMaterial
@@ -44,8 +57,14 @@ function Planet({ destination }) {
   )
 }
 
-function OrbitingSpacecraft({ spacecraft }) {
+function OrbitingSpacecraft({ spacecraft, destination }) {
   const orbitRef = useRef()
+  const reference = nasaMissionReferences[destination]
+
+  // Orbit plane tilt = NASA reference inclination (LRO: polar, MRO: 93 degrees).
+  // The orbit altitude is NOT to scale (real altitudes are 50 km and ~300 km).
+  const inclination = (reference.inclinationDeg * Math.PI) / 180
+  const orbitRadius = getPlanetRadius(destination) + 1.3
 
   useFrame((state, delta) => {
     if (orbitRef.current) {
@@ -54,9 +73,11 @@ function OrbitingSpacecraft({ spacecraft }) {
   })
 
   return (
-    <group ref={orbitRef}>
-      <group position={[3.5, 0, 0]} scale={0.28}>
-        <SatelliteModel spacecraft={spacecraft} />
+    <group rotation={[inclination, 0, 0]}>
+      <group ref={orbitRef}>
+        <group position={[orbitRadius, 0, 0]} scale={0.28}>
+          <SatelliteModel spacecraft={spacecraft} />
+        </group>
       </group>
     </group>
   )
@@ -77,14 +98,14 @@ function MissionScene({ destination, spacecraft }) {
 
       <Planet destination={destination} />
 
-      <OrbitingSpacecraft spacecraft={spacecraft} />
+      <OrbitingSpacecraft spacecraft={spacecraft} destination={destination} />
 
       <OrbitControls
         enablePan={false}
         enableZoom
         enableRotate
         minDistance={5}
-        maxDistance={13}
+        maxDistance={16}
       />
     </>
   )
@@ -99,7 +120,7 @@ export default function MissionVisualization({ destination, spacecraft }) {
       borderRadius: '14px',
       background: '#050817'
     }}>
-      <Canvas camera={{ position: [7, 4, 8], fov: 45 }}>
+      <Canvas camera={{ position: [8, 5, 9], fov: 45 }}>
         <MissionScene
           destination={destination}
           spacecraft={spacecraft}
