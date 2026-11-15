@@ -63,6 +63,12 @@ function App() {
         power: 90,
         cost: 24,
       },
+      neutron: {
+        name: 'Neutron detector',
+        mass: 30,
+        power: 20,
+        cost: 16,
+      },
     },
 
     propulsion: {
@@ -152,11 +158,11 @@ function App() {
         description: 'Capture detailed images of lunar terrain and surface features.'
       },
       {
-        id: 'composition',
-        name: 'Study Lunar Composition',
-        instrument: 'spectrometer',
-        nasaInstrumentId: null,
-        description: 'Investigate the composition of lunar materials.'
+        id: 'hydrogen',
+        name: 'Map Lunar Hydrogen Distribution',
+        instrument: 'neutron',
+        nasaInstrumentId: 'lend',
+        description: 'Map hydrogen distribution in the lunar surface to investigate possible water-ice deposits.'
       }
     ],
 
@@ -272,8 +278,17 @@ function App() {
   // CALCULATE SPACECRAFT RESOURCES
 
 
-  const instrumentMassVerified = activeNasaInstrument?.massKg != null
-  const instrumentPowerVerified = activeNasaInstrument?.powerW != null
+  const nasaInstrumentMatchesSelection =
+    activeNasaInstrument &&
+    spacecraft.instrument === activeObjective?.instrument
+
+  const instrumentMassVerified =
+    nasaInstrumentMatchesSelection &&
+    activeNasaInstrument.massKg != null
+
+  const instrumentPowerVerified =
+    nasaInstrumentMatchesSelection &&
+    activeNasaInstrument.powerW != null
 
   const instrumentMass = instrumentMassVerified
     ? activeNasaInstrument.massKg
@@ -313,14 +328,15 @@ function App() {
 
   // NASA DATA VERIFICATION STATUS
   const nasaMassStatus = instrumentMassVerified
-    ? 'NASA reference value'
+    ? `${activeNasaInstrument.massKg} kg (NASA reference)`
     : 'Not verified — illustrative fallback used'
 
   const nasaPowerStatus = instrumentPowerVerified
-    ? 'NASA reference value'
+    ? `${activeNasaInstrument.powerW} W (NASA reference)`
     : 'Not verified — illustrative fallback used'
 
-  const nasaInstrumentName = activeNasaInstrument?.name || 'No linked NASA instrument'
+  const nasaInstrumentName =
+    activeNasaInstrument?.name || 'No linked NASA instrument'
 
   // MISSION-SPECIFIC MASS LIMITS
   const missionMassLimit = selectedMission === 'moon' ? 350 : 400
@@ -895,6 +911,7 @@ function App() {
                 <option value="camera">High-resolution camera</option>
                 <option value="spectrometer">Spectrometer</option>
                 <option value="radar">Scientific radar</option>
+                <option value="neutron">Neutron detector</option>
               </select>
 
               <label htmlFor="propulsion">Propulsion system</label>
