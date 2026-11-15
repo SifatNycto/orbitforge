@@ -141,39 +141,46 @@ function App() {
         id: 'ice',
         name: 'Search for Lunar Water Ice',
         instrument: 'radar',
-        description: 'Investigate permanently shadowed regions near the lunar south pole for possible subsurface ice.'
+        nasaInstrumentId: 'mini-rf',
+        description: 'Investigate permanently shadowed regions for possible subsurface ice.'
       },
       {
         id: 'surface',
         name: 'Map the Lunar Surface',
         instrument: 'camera',
-        description: 'Capture detailed images to study lunar terrain and surface features.'
+        nasaInstrumentId: 'lroc',
+        description: 'Capture detailed images of lunar terrain and surface features.'
       },
       {
         id: 'composition',
         name: 'Study Lunar Composition',
         instrument: 'spectrometer',
-        description: 'Analyze reflected light to investigate the composition of lunar materials.'
+        nasaInstrumentId: null,
+        description: 'Investigate the composition of lunar materials.'
       }
     ],
+
     mars: [
       {
         id: 'terrain',
         name: 'Map the Martian Surface',
         instrument: 'camera',
-        description: 'Capture images of Martian terrain and geological features.'
+        nasaInstrumentId: 'hirise',
+        description: 'Capture high-resolution images of Martian terrain.'
       },
       {
         id: 'minerals',
         name: 'Identify Surface Minerals',
         instrument: 'spectrometer',
-        description: 'Analyze spectral signatures to investigate Martian surface minerals.'
+        nasaInstrumentId: 'crism',
+        description: 'Investigate Martian minerals using spectral observations.'
       },
       {
         id: 'subsurface',
         name: 'Investigate Subsurface Structure',
         instrument: 'radar',
-        description: 'Use radar measurements to investigate subsurface structures.'
+        nasaInstrumentId: 'sharad',
+        description: 'Investigate Martian subsurface structures using radar.'
       }
     ]
   }
@@ -185,6 +192,12 @@ function App() {
   const activeObjective = activeObjectives.find(
     objective => objective.id === selectedObjective
   )
+
+  const activeNasaInstrument = selectedMission && activeObjective?.nasaInstrumentId
+    ? nasaMissionReferences[selectedMission].instruments.find(
+        instrument => instrument.id === activeObjective.nasaInstrumentId
+      )
+    : null
 
   
   const scienceReports = {
@@ -258,16 +271,28 @@ function App() {
 
   // CALCULATE SPACECRAFT RESOURCES
 
+
+  const instrumentMassVerified = activeNasaInstrument?.massKg != null
+  const instrumentPowerVerified = activeNasaInstrument?.powerW != null
+
+  const instrumentMass = instrumentMassVerified
+    ? activeNasaInstrument.massKg
+    : componentSpecs.instrument[spacecraft.instrument].mass
+
+  const instrumentPower = instrumentPowerVerified
+    ? activeNasaInstrument.powerW
+    : componentSpecs.instrument[spacecraft.instrument].power
+
   const totalMass =
     componentSpecs.bus[spacecraft.bus].mass +
-    componentSpecs.instrument[spacecraft.instrument].mass +
+    instrumentMass +
     componentSpecs.propulsion[spacecraft.propulsion].mass +
     componentSpecs.power[spacecraft.power].mass +
     componentSpecs.communication[spacecraft.communication].mass
 
   const totalPowerUse =
     componentSpecs.bus[spacecraft.bus].power +
-    componentSpecs.instrument[spacecraft.instrument].power +
+    instrumentPower +
     componentSpecs.propulsion[spacecraft.propulsion].power +
     componentSpecs.communication[spacecraft.communication].power
 
@@ -276,6 +301,7 @@ function App() {
 
   const powerBalance = powerGeneration - totalPowerUse
 
+  // ALL COSTS ARE ILLUSTRATIVE GAME ESTIMATES
   const totalCost =
     componentSpecs.bus[spacecraft.bus].cost +
     componentSpecs.instrument[spacecraft.instrument].cost +
@@ -284,6 +310,17 @@ function App() {
     componentSpecs.communication[spacecraft.communication].cost
 
   const remainingBudget = missionBudget - totalCost
+
+  // NASA DATA VERIFICATION STATUS
+  const nasaMassStatus = instrumentMassVerified
+    ? 'NASA reference value'
+    : 'Not verified — illustrative fallback used'
+
+  const nasaPowerStatus = instrumentPowerVerified
+    ? 'NASA reference value'
+    : 'Not verified — illustrative fallback used'
+
+  const nasaInstrumentName = activeNasaInstrument?.name || 'No linked NASA instrument'
 
   // MISSION-SPECIFIC MASS LIMITS
   const missionMassLimit = selectedMission === 'moon' ? 350 : 400
@@ -869,6 +906,32 @@ function App() {
                 </strong>
               </div>
             </div>
+    
+            {/* NASA DATA VERIFICATION PANEL */}
+            <div className="nasa-data-status">
+              <h3>NASA Instrument Data Status</h3>
+
+              <p>
+                <strong>Selected NASA reference:</strong> {nasaInstrumentName}
+              </p>
+
+              <p>
+                <strong>Instrument mass:</strong> {nasaMassStatus}
+              </p>
+
+              <p>
+                <strong>Instrument power:</strong> {nasaPowerStatus}
+              </p>
+
+              <p>
+                <strong>Component costs:</strong> Illustrative game estimates
+              </p>
+
+              <p>
+                <strong>Other spacecraft components:</strong> Illustrative game assumptions
+              </p>
+            </div>
+
             {/* ENGINEERING STATUS */}
             <div className="engineering-alerts">
               {powerBalance < 0 && (
