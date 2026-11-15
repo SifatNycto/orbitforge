@@ -6,6 +6,8 @@
 //  * Where NASA documents disagree, the primary value is kept in the main field and the
 //    other value is stored in `alternativeValues` / `designAllocation` with its source.
 //  * `valueType` tells you whether a number is a flight value or a pre-launch design allocation.
+//  * `secondary: true` on a timeline entry means the date was confirmed from a non-NASA or
+//    NASA-derived secondary page rather than a NASA primary document.
 
 // Mission segments from NASA "Design and Develop Science Missions"
 // (2026 NASA Space Apps Challenge — Resources tab).
@@ -68,6 +70,14 @@ export const nasaMissionReferences = {
     equatorialRadiusKm: 1738.1,
     deltaVMs: 1300,
     deltaVNote: 'More than 1,300 m/s of delta-V for orbit capture and maintenance (hydrazine monopropellant)',
+
+    // TIME (challenge resource: planned development and operational lifetime) ---
+    plannedScienceDuration: 'One-year base mission with a goal of up to four additional years of extended operations (NASA design baseline)',
+    timeline: [
+      { when: '18 June 2009', event: 'Launch on an Atlas V 401 together with LCROSS', source: 'https://spaceflightnow.com/atlas/av020/090610lro.html', secondary: true },
+      { when: 'About 4–5 days after launch (design)', event: 'Cis-lunar transfer, then orbit-insertion maneuvers into a polar orbit', source: 'https://science.nasa.gov/wp-content/uploads/2024/01/lro-space-science-paper.pdf', secondary: false },
+      { when: '15 September 2009', event: 'Primary mapping mission starts in a ~50 km orbit (one year)', source: 'https://en.wikipedia.org/wiki/Lunar_Reconnaissance_Orbiter', secondary: true },
+    ],
 
     // COMMUNICATIONS --------------------------------------------------
     communications: 'Ka-band science downlink at 100 Mbps (40 W transmitter + high-gain antenna); S-band for command, telemetry and navigation; two 100 GByte onboard recorders',
@@ -167,6 +177,14 @@ export const nasaMissionReferences = {
     equatorialRadiusKm: 3396.2,
     deltaVMs: null,
     deltaVNote: 'Delta-V budget not verified in the sources checked',
+
+    // TIME (challenge resource: planned development and operational lifetime) ---
+    plannedScienceDuration: 'Primary Science Phase of just over one Mars year',
+    timeline: [
+      { when: '12 August 2005', event: 'Launch on an Atlas V 401', source: 'https://sites.google.com/si.edu/ai-mars/mission-to-mars/orbiters/mars-reconnaissance-orbiter', secondary: true },
+      { when: '10 March 2006', event: 'Mars orbit insertion', source: 'https://sites.google.com/si.edu/ai-mars/mission-to-mars/orbiters/mars-reconnaissance-orbiter', secondary: true },
+      { when: 'November 2006', event: 'Primary Science Phase begins', source: 'https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2006JE002682', secondary: false },
+    ],
 
     // COMMUNICATIONS --------------------------------------------------
     communications: null,

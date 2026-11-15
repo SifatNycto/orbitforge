@@ -708,6 +708,24 @@ function App() {
             <small>{nasaMissionReferences[selectedMission].payloadNote}</small>
           </p>
 
+          <p>
+            <strong>Planned science duration:</strong>{' '}
+            {nasaMissionReferences[selectedMission].plannedScienceDuration}
+          </p>
+
+          <div className="nasa-data-status">
+            <h3>Reference mission timeline</h3>
+
+            {nasaMissionReferences[selectedMission].timeline.map(item => (
+              <p key={item.when}>
+                <strong>{item.when}:</strong> {item.event}{' '}
+                <a href={item.source} target="_blank" rel="noreferrer">
+                  {item.secondary ? 'source (secondary) ↗' : 'NASA source ↗'}
+                </a>
+              </p>
+            ))}
+          </div>
+
           <h3>NASA flight instruments</h3>
 
           <div className="mission-grid">
