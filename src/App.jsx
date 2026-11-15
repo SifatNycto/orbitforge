@@ -367,16 +367,43 @@ function App() {
       return
     }
 
-    let score = 100
+    
+    const massScore = Math.round(
+      Math.max(0, 1 - totalMass / missionMassLimit) * 25
+    )
 
-    if (powerBalance < 30) score -= 10
-    if (remainingBudget < 15) score -= 10
-    if (totalMass > missionMassLimit * 0.9) score -= 10
+    const powerScore = Math.round(
+      Math.min(1, powerBalance / Math.max(totalPowerUse, 1)) * 25
+    )
+
+    const budgetScore = Math.round(
+      Math.max(0, remainingBudget / missionBudget) * 20
+    )
+
+    const scienceScore =
+      spacecraft.instrument === activeObjective.instrument ? 20 : 0
+
+    const readinessScore = 10
+
+    const scoreBreakdown = {
+      mass: massScore,
+      power: powerScore,
+      budget: budgetScore,
+      science: scienceScore,
+      readiness: readinessScore,
+    }
+
+    const score = Object.values(scoreBreakdown).reduce(
+      (total, points) => total + points,
+      0
+    )
+
 
     setSimulationResult({
       success: true,
       message: 'Mission ready! All engineering requirements satisfied.',
       score,
+      scoreBreakdown,
       objective: activeObjective.name,
       instrument: spacecraft.instrument,
       scienceReport: activeScienceReport,
@@ -664,7 +691,7 @@ function App() {
             with the selected NASA reference mission.
           </p>
 
-          <div className="resource-grid">
+          <div className="comparison-grid">
             <div className="resource-card">
               <span>YOUR SPACECRAFT MASS</span>
               <strong>{totalMass.toLocaleString()} kg</strong>
@@ -1050,6 +1077,14 @@ function App() {
             <div className="resource-dashboard">
               <p className="eyebrow">MISSION PERFORMANCE</p>
               <h2>Mission Score: {simulationResult.score}/100</h2>
+
+              <div className="score-breakdown">
+                <div>Mass efficiency <strong>{simulationResult.scoreBreakdown.mass}/25</strong></div>
+                <div>Power efficiency <strong>{simulationResult.scoreBreakdown.power}/25</strong></div>
+                <div>Budget efficiency <strong>{simulationResult.scoreBreakdown.budget}/20</strong></div>
+                <div>Science compatibility <strong>{simulationResult.scoreBreakdown.science}/20</strong></div>
+                <div>Mission readiness <strong>{simulationResult.scoreBreakdown.readiness}/10</strong></div>
+              </div>
 
               <h3>Science Objective</h3>
               <p>{simulationResult.objective}</p>

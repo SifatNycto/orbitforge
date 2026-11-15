@@ -5,7 +5,7 @@ export const nasaMissionReferences = {
     agency: 'NASA / Goddard Space Flight Center',
     target: 'Moon',
     spacecraftMassKg: 1850,
-    powerNote: 'NASA reference: approximately 400 W spacecraft power (overview figure).',
+    powerNote: '≈400 W (NASA overview figure)',
     orbit: 'Approximately 50 km polar orbit during its primary mapping mission',
     instruments: [
       {
